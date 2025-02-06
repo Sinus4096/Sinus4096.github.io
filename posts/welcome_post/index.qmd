@@ -1,0 +1,13 @@
+---
+title: "Welcome to my Blog"
+author: "Sina Schlegel"
+date: "2025-02-06"
+categories: [news]
+image: "welcome_pic.png"
+---
+
+Hey there! 👋
+
+I've finally set up this blog, and I'm excited to start sharing my thoughts, projects, and discoveries here. Stay tuned for upcoming posts—I'll be diving into topics that interest me, from tech and research to random things I find fascinating.
+
+Looking forward to this journey. Let’s see where it goes!

@@ -1,0 +1,20 @@
+---
+title: "Sina Schlegel"
+image: profile.jpg
+about:
+  template: solana
+  links:
+    - icon: browser-safari
+      text: Coding Blog
+      href: https://Sinus4096.github.io/blog.html
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/sina-schlegel-1a93a3295/
+    - icon: github
+      text: Github
+      href: https://github.com/Sinus4096
+---
+
+I am an undergraduate Economics student at the University of St. Gallen, with a strong foundation in mathematics and passion for data science. Currently, I work as a Student Assistant at HSG's Chair of Mathematics and have experience in Python, C++, R, and LaTeX. I am passionate about combining quantitative analysis with economic insights and enjoy working on projects that bridge these fields.
+
+Thank you very much for visiting and feel free to explore posts on my Blog using the navigation bar on the top right.

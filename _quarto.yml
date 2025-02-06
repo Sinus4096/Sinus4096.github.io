@@ -1,0 +1,24 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Sina Schlegel"
+  navbar:
+    pinned: true
+    right:
+      - text: About
+        href: about.qmd
+      - text: Blog
+        href: index.qmd 
+      - icon: linkedin
+        href: https://www.linkedin.com/in/sina-schlegel-1a93a3295/
+      - icon: github
+        href: https://github.com/Sinus4096
+format:
+  html:
+    theme:
+      dark: cyborg
+      light: cosmo
+    css: styles.css
+
