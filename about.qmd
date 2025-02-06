@@ -6,7 +6,7 @@ about:
   links:
     - icon: browser-safari
       text: Coding Blog
-      href: https://Sinus4096.github.io/blog.html
+      href: https://sinus4096.github.io/
     - icon: linkedin
       text: LinkedIn
       href: https://www.linkedin.com/in/sina-schlegel-1a93a3295/
