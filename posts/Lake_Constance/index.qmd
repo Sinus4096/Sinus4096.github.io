@@ -20,9 +20,6 @@ format:
     fig-format: png
 ---
 
-![With ChatGPT generatet header image](images/ramp_image_Chat_GPT.png){#fig-header}
-
-
 
 ## Introduction {#sec-introduction}
 
@@ -130,6 +127,8 @@ To ensure a realistic evaluation, we use a temporal split:
 This respects the time order and avoids training on future information.
 
 #### Log transformation and feature engineering
+
+<img src="Images/Density_plot.png" style="float: right; width: 30%; margin-left: 15px;">
 
 Exploratory analysis shows that water levels are right-skewed and approximately log-normally distributed. A log transformation stabilizes variance:
 

@@ -226,16 +226,6 @@ window.Quarto = {
 
 
 
-<div id="fig-header" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-header-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="images/ramp_image_Chat_GPT.png" class="img-fluid figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-header-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: With ChatGPT generatet header image
-</figcaption>
-</figure>
-</div>
 <section id="sec-introduction" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="sec-introduction"><span class="header-section-number">1</span> Introduction</h2>
 <p>Water levels in large lakes are subject to complex dynamics driven by meteorological conditions, hydrology, and long-term climate trends. For Lake Constance, these fluctuations have direct operational consequences. During periods of high water levels, steeper entry and exit angles at ferry ramps complicate boarding and disembarking, particularly for low-profile vehicles that may even be restricted to avoid damage. Conversely, low water levels can reduce cargo capacity, require stricter loading rules, and increase delays and fuel consumption due to suboptimal routing and load distribution.</p>
@@ -342,6 +332,7 @@ y_{t+1} = f(x_t) + \varepsilon_{t+1},
 </section>
 <section id="log-transformation-and-feature-engineering" class="level4" data-number="2.3.4">
 <h4 data-number="2.3.4" class="anchored" data-anchor-id="log-transformation-and-feature-engineering"><span class="header-section-number">2.3.4</span> Log transformation and feature engineering</h4>
+<p><img src="Images/Density_plot.png" style="float: right; width: 30%; margin-left: 15px;"></p>
 <p>Exploratory analysis shows that water levels are right-skewed and approximately log-normally distributed. A log transformation stabilizes variance:</p>
 <p><span class="math display">\[
 z_t = \log(y_t).
