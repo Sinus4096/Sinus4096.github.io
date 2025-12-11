@@ -1,5 +1,50 @@
 ---
-title: "index"
-format: html
+title: "Row-Column Game"
+author: "Sina Schlegel"
+date: "2025-12-11"
+categories:
+  - Game Theory
+  - Python
+image: "Images/Game_Appearance.png"
+
+format:
+  html:
+    code-fold: true
+    toc: true
+    toc-depth: 4
+    number-sections: true
+    fig-width: 12
+    fig-height: 8
+    fig-dpi: 150
+    fig-format: png
 ---
+
+## Introduction {#sec-introduction}
+
+In this post, I explore the design of intelligent decision-making strategies for the
+Row–Column Game, a turn-based two-player game defined by a surprisingly strategic rule:
+
+> After the first move, each player must select a cell in the same row or column as  
+> the opponent’s previous move.
+
+The game is played on an $n \times n$ grid of positive integers.
+Each chosen cell adds to the player’s score and is removed from the board.  
+The game continues until no legal moves remain.
+
+Although the rules are simple, the game produces a rich space of decisions:
+sometimes aggressively taking a high-value cell is optimal, but often it hands your opponent a devastating reply.  
+This makes the game a perfect playground for experimenting with different kinds of AI strategies.
+
+--
+
+## Understanding Initiative and Positional Advantage {#sec-advantage}
+
+Before considering individual strategies, it is important to understand the
+fundamental asymmetries built into the Row–Column Game. Although the rules are
+simple and both players face the same restrictions, the first move shapes the
+entire structure of the remaining game, and often creates a natural advantage
+for Player 1.
+
+### The power of choosing the first row or column {#sec-firstmover}
+
 

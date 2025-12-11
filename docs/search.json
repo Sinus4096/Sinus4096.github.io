@@ -18,7 +18,7 @@
     "href": "index.html",
     "title": "Blog",
     "section": "",
-    "text": "index\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWater Level Forecast of Lake Constance\n\n\n\n\n\n\nTime Series Analysis\n\n\nMachine Learning\n\n\nPython\n\n\n\n\n\n\n\n\n\nFeb 25, 2025\n\n\nSina Schlegel\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome to my Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nFeb 6, 2025\n\n\nSina Schlegel\n\n\n\n\n\n\nNo matching items"
+    "text": "Row-Column Game\n\n\n\n\n\n\nGame Theory\n\n\nPython\n\n\n\n\n\n\n\n\n\nDec 11, 2025\n\n\nSina Schlegel\n\n\n\n\n\n\n\n\n\n\n\n\nWater Level Forecast of Lake Constance\n\n\n\n\n\n\nTime Series Analysis\n\n\nMachine Learning\n\n\nPython\n\n\n\n\n\n\n\n\n\nFeb 25, 2025\n\n\nSina Schlegel\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome to my Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nFeb 6, 2025\n\n\nSina Schlegel\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/Lake_Constance/index.html",
@@ -61,5 +61,26 @@
     "title": "Water Level Forecast of Lake Constance",
     "section": "5 Conclusion",
     "text": "5 Conclusion\nThis study investigates next-day water level forecasts for Lake Constance using a rich feature set combining hydrological, meteorological, lunar, and climate change data. After careful preprocessing, feature engineering, and model tuning, we compare ARMA, regularized linear regressions, Random Forests, and a neural network.\nOur main findings are:\n\nLagged water levels are by far the most important predictors of tomorrow’s level; one-day persistence dominates the dynamics.\n\nPrecipitation and additional lags provide useful supplementary information, while other variables play a comparatively minor role for one-day-ahead predictions.\n\nRidge regression achieves the best overall performance, slightly outperforming Lasso and the neural network, and clearly improving upon ARMA and Random Forest.\n\nAll advanced models significantly outperform a naive persistence benchmark, reducing RMSE by up to 50%.\n\nFrom a practical perspective, these results demonstrate that relatively simple, interpretable models such as Ridge regression can already deliver highly accurate forecasts that are suitable for operational decision-making. Future work could extend the horizon to multi-day forecasts, incorporate probabilistic prediction intervals, or explore spatially distributed models that jointly consider multiple gauging stations around Lake Constance."
+  },
+  {
+    "objectID": "posts/Row_Column_Game/index.html",
+    "href": "posts/Row_Column_Game/index.html",
+    "title": "Row-Column Game",
+    "section": "",
+    "text": "In this post, I explore the design of intelligent decision-making strategies for the Row–Column Game, a turn-based two-player game defined by a surprisingly strategic rule:\n\nAfter the first move, each player must select a cell in the same row or column as\nthe opponent’s previous move.\n\nThe game is played on an \\(n \\times n\\) grid of positive integers. Each chosen cell adds to the player’s score and is removed from the board.\nThe game continues until no legal moves remain.\nAlthough the rules are simple, the game produces a rich space of decisions: sometimes aggressively taking a high-value cell is optimal, but often it hands your opponent a devastating reply.\nThis makes the game a perfect playground for experimenting with different kinds of AI strategies.\n–"
+  },
+  {
+    "objectID": "posts/Row_Column_Game/index.html#sec-introduction",
+    "href": "posts/Row_Column_Game/index.html#sec-introduction",
+    "title": "Row-Column Game",
+    "section": "",
+    "text": "In this post, I explore the design of intelligent decision-making strategies for the Row–Column Game, a turn-based two-player game defined by a surprisingly strategic rule:\n\nAfter the first move, each player must select a cell in the same row or column as\nthe opponent’s previous move.\n\nThe game is played on an \\(n \\times n\\) grid of positive integers. Each chosen cell adds to the player’s score and is removed from the board.\nThe game continues until no legal moves remain.\nAlthough the rules are simple, the game produces a rich space of decisions: sometimes aggressively taking a high-value cell is optimal, but often it hands your opponent a devastating reply.\nThis makes the game a perfect playground for experimenting with different kinds of AI strategies.\n–"
+  },
+  {
+    "objectID": "posts/Row_Column_Game/index.html#sec-advantage",
+    "href": "posts/Row_Column_Game/index.html#sec-advantage",
+    "title": "Row-Column Game",
+    "section": "2 Understanding Initiative and Positional Advantage",
+    "text": "2 Understanding Initiative and Positional Advantage\nBefore considering individual strategies, it is important to understand the fundamental asymmetries built into the Row–Column Game. Although the rules are simple and both players face the same restrictions, the first move shapes the entire structure of the remaining game, and often creates a natural advantage for Player 1.\n\n2.1 The power of choosing the first row or column"
   }
 ]
