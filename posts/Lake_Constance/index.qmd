@@ -25,7 +25,7 @@ format:
 
 Water levels in large lakes are subject to complex dynamics driven by meteorological conditions, hydrology, and long-term climate trends. For Lake Constance, these fluctuations have direct operational consequences. During periods of high water levels, steeper entry and exit angles at ferry ramps complicate boarding and disembarking, particularly for low-profile vehicles that may even be restricted to avoid damage. Conversely, low water levels can reduce cargo capacity, require stricter loading rules, and increase delays and fuel consumption due to suboptimal routing and load distribution.
 
-These operational frictions lead to customer dissatisfaction, lost revenue, and higher overall costs for ferry companies operating on Lake Constance. Reliable short-term water level forecasts are therefore highly valuable, as they enable better planning of schedules, loading strategies, and potential service suspensions. :contentReference[oaicite:0]{index=0}
+These operational frictions lead to customer dissatisfaction, lost revenue, and higher overall costs for ferry companies operating on Lake Constance. Reliable short-term water level forecasts are therefore highly valuable, as they enable better planning of schedules, loading strategies, and potential service suspensions. 
 
 In this project, we develop models to predict next-day water levels at Lake Constance using a comprehensive set of meteorological, hydrological, and climate-related features. Formally, let  
 

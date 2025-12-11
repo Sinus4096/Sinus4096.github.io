@@ -229,7 +229,7 @@ window.Quarto = {
 <section id="sec-introduction" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="sec-introduction"><span class="header-section-number">1</span> Introduction</h2>
 <p>Water levels in large lakes are subject to complex dynamics driven by meteorological conditions, hydrology, and long-term climate trends. For Lake Constance, these fluctuations have direct operational consequences. During periods of high water levels, steeper entry and exit angles at ferry ramps complicate boarding and disembarking, particularly for low-profile vehicles that may even be restricted to avoid damage. Conversely, low water levels can reduce cargo capacity, require stricter loading rules, and increase delays and fuel consumption due to suboptimal routing and load distribution.</p>
-<p>These operational frictions lead to customer dissatisfaction, lost revenue, and higher overall costs for ferry companies operating on Lake Constance. Reliable short-term water level forecasts are therefore highly valuable, as they enable better planning of schedules, loading strategies, and potential service suspensions. :contentReference<span data-index="0">oaicite:0</span></p>
+<p>These operational frictions lead to customer dissatisfaction, lost revenue, and higher overall costs for ferry companies operating on Lake Constance. Reliable short-term water level forecasts are therefore highly valuable, as they enable better planning of schedules, loading strategies, and potential service suspensions.</p>
 <p>In this project, we develop models to predict next-day water levels at Lake Constance using a comprehensive set of meteorological, hydrological, and climate-related features. Formally, let</p>
 <ul>
 <li><span class="math inline">\(y_t\)</span> denote the observed lake level on day <span class="math inline">\(t\)</span>, and<br>
@@ -263,12 +263,12 @@ window.Quarto = {
 <h2 data-number="2" class="anchored" data-anchor-id="sec-methodology"><span class="header-section-number">2</span> Methodology</h2>
 <section id="sec-setup" class="level3" data-number="2.1">
 <h3 data-number="2.1" class="anchored" data-anchor-id="sec-setup"><span class="header-section-number">2.1</span> Problem Setup</h3>
-<p>We focus on daily water levels measured in Constance, one of the standard gauging stations at Lake Constance. Let ({y_t}<em>{t=1}^T) denote the water level time series (in cm). The goal is to forecast (y</em>{t+1}) using information available up to day (t).</p>
+<p>We focus on daily water levels measured in Constance, one of the standard gauging stations at Lake Constance. Let <span class="math inline">\(\{y_t\}_{t=1}^T\)</span> denote the water level time series (in cm). The goal is to forecast <span class="math inline">\(y_{t+1}\)</span> using information available up to day <span class="math inline">\(t\)</span>.</p>
 <p>The general prediction framework can be written as</p>
 <p><span class="math display">\[
 y_{t+1} = f(x_t) + \varepsilon_{t+1},
 \]</span></p>
-<p>where <span class="math inline">\(x_t\)</span> contains contemporaneous and lagged features and (_{t+1}) is an error term with mean zero.</p>
+<p>where <span class="math inline">\(x_t\)</span> contains contemporaneous and lagged features and <span class="math inline">\(\varepsilon_{t+1}\)</span> is an error term with mean zero.</p>
 </section>
 <section id="sec-data" class="level3" data-number="2.2">
 <h3 data-number="2.2" class="anchored" data-anchor-id="sec-data"><span class="header-section-number">2.2</span> Data</h3>
