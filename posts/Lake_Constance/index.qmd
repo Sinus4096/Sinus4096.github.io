@@ -62,7 +62,7 @@ and benchmarked against a naive persistence model \(\hat{y}_{t+1}^{\text{naive}}
 
 ### Problem Setup {#sec-setup}
 
-We focus on daily water levels measured in Constance, one of the standard gauging stations at Lake Constance. Let \(\{y_t\}_{t=1}^T\) denote the water level time series (in cm). The goal is to forecast \(y_{t+1}\) using information available up to day \(t\).
+We focus on daily water levels measured in Constance, one of the standard gauging stations at Lake Constance. Let $\{y_t\}_{t=1}^T$ denote the water level time series (in cm). The goal is to forecast $y_{t+1}$ using information available up to day $t$.
 
 The general prediction framework can be written as
 
@@ -70,7 +70,7 @@ $$
 y_{t+1} = f(x_t) + \varepsilon_{t+1},
 $$
 
-where $x_t$ contains contemporaneous and lagged features and \(\varepsilon_{t+1}\) is an error term with mean zero.
+where $x_t$ contains contemporaneous and lagged features and $\varepsilon_{t+1}$ is an error term with mean zero.
 
 ### Data {#sec-data}
 
