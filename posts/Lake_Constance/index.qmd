@@ -6,7 +6,8 @@ categories:
   - Time Series Analysis
   - Machine Learning
   - Python
-image: ""
+image: "Images/ramp_image_Chat_GPT.png"
+
 format:
   html:
     code-fold: true
@@ -31,14 +32,14 @@ These operational frictions lead to customer dissatisfaction, lost revenue, and 
 
 In this project, we develop models to predict next-day water levels at Lake Constance using a comprehensive set of meteorological, hydrological, and climate-related features. Formally, let  
 
-- \(y_t\) denote the observed lake level on day \(t\), and  
-- \(\mathbf{x}_t\) the feature vector observed on day \(t\).
+- $y_t$ denote the observed lake level on day $t$, and  
+- ${x}_t$ the feature vector observed on day $t$.
 
-The one-step-ahead forecasting problem is to construct a model \(f(\cdot)\) such that
+The one-step-ahead forecasting problem is to construct a model $f(\cdot)$ such that
 
-\[
-\hat{y}_{t+1} = f(\mathbf{x}_t), \qquad t = 1,\dots,T-1,
-\]
+$$
+\hat{y}_{t+1} = f(x_t), \qquad t = 1,\dots,T-1,
+$$
 
 and to evaluate its out-of-sample performance on a hold-out period.
 
@@ -51,10 +52,10 @@ We compare several classes of models:
 
 Performance is assessed via the root mean squared error (RMSE),
 
-\[
+$$
 \text{RMSE} = 
 \sqrt{\frac{1}{N}\sum_{t=1}^{N}(y_t - \hat{y}_t)^2},
-\]
+$$
 
 and benchmarked against a naive persistence model \(\hat{y}_{t+1}^{\text{naive}} = y_t\). We find that modern machine learning methods and regularized linear models substantially improve upon the naive baseline, with Ridge regression achieving the lowest RMSE in our experiments.
 
@@ -68,15 +69,15 @@ We focus on daily water levels measured in Constance, one of the standard gaugin
 
 The general prediction framework can be written as
 
-\[
-y_{t+1} = f(\mathbf{x}_t) + \varepsilon_{t+1},
-\]
+$$
+y_{t+1} = f(x_t) + \varepsilon_{t+1},
+$$
 
-where \(\mathbf{x}_t\) contains contemporaneous and lagged features and \(\varepsilon_{t+1}\) is an error term with mean zero.
+where $x_t$ contains contemporaneous and lagged features and \(\varepsilon_{t+1}\) is an error term with mean zero.
 
 ### Data {#sec-data}
 
-We combine several datasets to construct \(\mathbf{x}_t\):
+We combine several datasets to construct ${x}_t$:
 
 1. **Hydrological data**
 
@@ -107,11 +108,11 @@ Several preprocessing steps are required before modeling:
 
 Because we want to predict tomorrow’s water level using today’s information, the target series is shifted:
 
-\[
+$$
 \tilde{y}_t = y_{t+1}, \qquad t = 1,\dots,T-1,
-\]
+$$
 
-so that each row \((\mathbf{x}_t, \tilde{y}_t)\) encodes features at day \(t\) and the corresponding water level on day \(t+1\).
+so that each row $(x_t, \tilde{y}_t)$ encodes features at day $t$ and the corresponding water level on day \(t+1\).
 
 #### Handling missing values and outliers
 
@@ -132,26 +133,26 @@ This respects the time order and avoids training on future information.
 
 Exploratory analysis shows that water levels are right-skewed and approximately log-normally distributed. A log transformation stabilizes variance:
 
-\[
+$$
 z_t = \log(y_t).
-\]
+$$
 
 To capture temporal dependence, we add lagged levels as features:
 
-\[
+$$
 z_{t-1}, z_{t-2}, \dots, z_{t-7},
-\]
+$$
 
 representing the last seven days of water levels. Because these lags would be known at prediction time, they do not introduce look-ahead bias.
 
 For models that can exploit seasonality directly (Random Forest, Neural Network), we additionally encode calendar effects via cyclical features, e.g.
 
-\[
+$$
 \begin{aligned}
 \text{month\_sin}_t &= \sin\left( 2\pi \cdot \frac{\text{month}(t)}{12} \right), \\
 \text{month\_cos}_t &= \cos\left( 2\pi \cdot \frac{\text{month}(t)}{12} \right),
 \end{aligned}
-\]
+$$
 
 and analogous terms for week-of-year, half-year, etc.
 
@@ -174,49 +175,49 @@ We compare four main model classes.
 
 ### ARMA {#sec-arma}
 
-The ARMA model treats deseasonalized log water levels as a univariate time series \(\tilde{z}_t\) and assumes
+The ARMA model treats deseasonalized log water levels as a univariate time series $\tilde{z}_t$ and assumes
 
-\[
+$$
 \tilde{z}_t = \mu + \sum_{i=1}^{p} \phi_i \tilde{z}_{t-i}
 + \sum_{j=1}^{q} \theta_j \varepsilon_{t-j}
 + \varepsilon_t,
 \qquad \varepsilon_t \sim \mathcal{N}(0,\sigma^2).
-\]
+$$
 
-We perform a grid search over orders \(p\) and \(q\) on the training set using time-series cross-validation, selecting the combination that minimizes RMSE. The optimal configuration is ARMA(4,3). Forecasts are generated in a rolling fashion, always using the most recent observed (or previously predicted) values.
+We perform a grid search over orders $p$ and $q$ on the training set using time-series cross-validation, selecting the combination that minimizes RMSE. The optimal configuration is ARMA(4,3). Forecasts are generated in a rolling fashion, always using the most recent observed (or previously predicted) values.
 
 ### Regularized Linear Regression (Ridge and Lasso) {#sec-linear}
 
-After deseasonalization and standardization, we model the relationship between features \(\mathbf{x}_t\) and target \(\tilde{z}_t\) via
+After deseasonalization and standardization, we model the relationship between features \(\mathbf{x}_t\) and target $\tilde{z}_t$ via
 
-\[
-\tilde{z}_t = \beta_0 + \mathbf{x}_t^\top \boldsymbol{\beta} + \varepsilon_t,
-\]
+$$
+\tilde{z}_t = \beta_0 + x_t^\top \boldsymbol{\beta} + \varepsilon_t,
+$$
 
 with two different regularization schemes:
 
 - **Ridge regression** solves  
-  \[
+  $$
   \min_{\beta_0,\boldsymbol{\beta}} 
   \sum_{t} (\tilde{z}_t - \beta_0 - \mathbf{x}_t^\top \boldsymbol{\beta})^2
   + \lambda \lVert \boldsymbol{\beta} \rVert_2^2,
-  \]
+  $$
 - **Lasso regression** solves  
-  \[
+  $$
   \min_{\beta_0,\boldsymbol{\beta}} 
   \sum_{t} (\tilde{z}_t - \beta_0 - \mathbf{x}_t^\top \boldsymbol{\beta})^2
   + \lambda \lVert \boldsymbol{\beta} \rVert_1.
-  \]
+  $$
 
-The regularization parameter \(\lambda\) is selected via grid search with TimeSeriesSplit cross-validation. Ridge primarily shrinks coefficients, while Lasso additionally performs variable selection by driving some coefficients to zero.
+The regularization parameter $\lambda$ is selected via grid search with TimeSeriesSplit cross-validation. Ridge primarily shrinks coefficients, while Lasso additionally performs variable selection by driving some coefficients to zero.
 
 ### Random Forest {#sec-rf}
 
 Random Forest is an ensemble of decision trees. Each tree \(f^{(b)}\) is fitted on a bootstrap sample of the training data, considering a random subset of features at each split. The final prediction is the average
 
-\[
-\hat{z}_{t+1}^{\text{RF}} = \frac{1}{B} \sum_{b=1}^{B} f^{(b)}(\mathbf{x}_t).
-\]
+$$
+\hat{z}_{t+1}^{\text{RF}} = \frac{1}{B} \sum_{b=1}^{B} f^{(b)}({x}_t).
+$$
 
 Hyperparameters such as the number of trees, maximum depth, and minimum samples per split are tuned via RandomizedSearchCV with time-series splits. After tuning, we train a larger forest (e.g. \(B = 500\) trees) using the best configuration. Random Forest additionally provides feature importance scores, which we exploit to interpret the drivers of predictability.
 
@@ -224,13 +225,13 @@ Hyperparameters such as the number of trees, maximum depth, and minimum samples 
 
 For the neural network, we use a multi-layer perceptron (MLP) implemented via scikit-learn’s `MLPRegressor`. The MLP models a non-linear mapping
 
-\[
+$$
 \hat{z}_{t+1}^{\text{NN}} = f_{\text{NN}}(\mathbf{x}_t; \Theta),
-\]
+$$
 
-where \(\Theta\) denotes all weights and biases. The chosen architecture has three hidden layers with 32, 64, and 32 neurons, respectively, ReLU activations, and the Adam optimizer with learning rate \(10^{-4}\). An \(L_2\) penalty with \(\alpha = 0.01\) controls overfitting.
+where $\Theta$ denotes all weights and biases. The chosen architecture has three hidden layers with 32, 64, and 32 neurons, respectively, ReLU activations, and the Adam optimizer with learning rate $10^{-4}$. An $L_2$ penalty with $\alpha = 0.01$ controls overfitting.
 
-Hyperparameters (layer sizes, batch size, learning rate, regularization) are tuned via `RandomizedSearchCV`. We assess feature importance using **permutation importance**, which measures the increase in prediction error when a feature is randomly shuffled.
+Hyperparameters (layer sizes, batch size, learning rate, regularization) are tuned via `RandomizedSearchCV`. We assess feature importance using permutation importance, which measures the increase in prediction error when a feature is randomly shuffled.
 
 ---
 
@@ -244,7 +245,7 @@ Table 1 reports RMSE values for all models on the test set (2018–2023), along 
 
 | Model              | RMSE |
 |--------------------|------|
-| Naive (\(y_t\))    | 2.85 |
+| Naive ($y_t$)      | 2.85 |
 | ARMA(4,3)          | 2.12 |
 | Ridge Regression   | 1.40 |
 | Lasso Regression   | 1.43 |

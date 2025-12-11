@@ -9,7 +9,7 @@
 <meta name="author" content="Sina Schlegel">
 <meta name="dcterms.date" content="2025-02-25">
 
-<title></title>
+<title>Water Level Forecast of Lake Constance – Sina Schlegel</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -70,11 +70,40 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
@@ -123,7 +152,9 @@ ul.task-list li input[type="checkbox"] {
     <div class="quarto-title column-body">
       <h1 class="title">Water Level Forecast of Lake Constance</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">news</div>
+                <div class="quarto-category">Time Series Analysis</div>
+                <div class="quarto-category">Machine Learning</div>
+                <div class="quarto-category">Python</div>
               </div>
                   </div>
   </div>
@@ -152,162 +183,339 @@ ul.task-list li input[type="checkbox"] {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#sec-introduction" id="toc-sec-introduction" class="nav-link active" data-scroll-target="#sec-introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#sec-methodology" id="toc-sec-methodology" class="nav-link" data-scroll-target="#sec-methodology"><span class="header-section-number">2</span> Methodology</a>
+  <ul>
+  <li><a href="#sec-setup" id="toc-sec-setup" class="nav-link" data-scroll-target="#sec-setup"><span class="header-section-number">2.1</span> Problem Setup</a></li>
+  <li><a href="#sec-data" id="toc-sec-data" class="nav-link" data-scroll-target="#sec-data"><span class="header-section-number">2.2</span> Data</a></li>
+  <li><a href="#sec-preprocessing" id="toc-sec-preprocessing" class="nav-link" data-scroll-target="#sec-preprocessing"><span class="header-section-number">2.3</span> Preprocessing</a>
+  <ul class="collapse">
+  <li><a href="#temporal-alignment-and-target-shift" id="toc-temporal-alignment-and-target-shift" class="nav-link" data-scroll-target="#temporal-alignment-and-target-shift"><span class="header-section-number">2.3.1</span> Temporal alignment and target shift</a></li>
+  <li><a href="#handling-missing-values-and-outliers" id="toc-handling-missing-values-and-outliers" class="nav-link" data-scroll-target="#handling-missing-values-and-outliers"><span class="header-section-number">2.3.2</span> Handling missing values and outliers</a></li>
+  <li><a href="#traintest-split" id="toc-traintest-split" class="nav-link" data-scroll-target="#traintest-split"><span class="header-section-number">2.3.3</span> Train–test split</a></li>
+  <li><a href="#log-transformation-and-feature-engineering" id="toc-log-transformation-and-feature-engineering" class="nav-link" data-scroll-target="#log-transformation-and-feature-engineering"><span class="header-section-number">2.3.4</span> Log transformation and feature engineering</a></li>
+  </ul></li>
+  <li><a href="#sec-decomposition" id="toc-sec-decomposition" class="nav-link" data-scroll-target="#sec-decomposition"><span class="header-section-number">2.4</span> Time-Series Decomposition</a></li>
+  </ul></li>
+  <li><a href="#sec-models" id="toc-sec-models" class="nav-link" data-scroll-target="#sec-models"><span class="header-section-number">3</span> Models</a>
+  <ul>
+  <li><a href="#sec-arma" id="toc-sec-arma" class="nav-link" data-scroll-target="#sec-arma"><span class="header-section-number">3.1</span> ARMA</a></li>
+  <li><a href="#sec-linear" id="toc-sec-linear" class="nav-link" data-scroll-target="#sec-linear"><span class="header-section-number">3.2</span> Regularized Linear Regression (Ridge and Lasso)</a></li>
+  <li><a href="#sec-rf" id="toc-sec-rf" class="nav-link" data-scroll-target="#sec-rf"><span class="header-section-number">3.3</span> Random Forest</a></li>
+  <li><a href="#sec-nn" id="toc-sec-nn" class="nav-link" data-scroll-target="#sec-nn"><span class="header-section-number">3.4</span> Neural Network</a></li>
+  </ul></li>
+  <li><a href="#sec-results" id="toc-sec-results" class="nav-link" data-scroll-target="#sec-results"><span class="header-section-number">4</span> Results</a>
+  <ul>
+  <li><a href="#sec-accuracy" id="toc-sec-accuracy" class="nav-link" data-scroll-target="#sec-accuracy"><span class="header-section-number">4.1</span> Forecast Accuracy</a></li>
+  <li><a href="#sec-interpretation" id="toc-sec-interpretation" class="nav-link" data-scroll-target="#sec-interpretation"><span class="header-section-number">4.2</span> Interpretation of Drivers</a></li>
+  <li><a href="#sec-baseline" id="toc-sec-baseline" class="nav-link" data-scroll-target="#sec-baseline"><span class="header-section-number">4.3</span> Comparison to Baseline</a></li>
+  </ul></li>
+  <li><a href="#sec-conclusion" id="toc-sec-conclusion" class="nav-link" data-scroll-target="#sec-conclusion"><span class="header-section-number">5</span> Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
-<p><img src="Images/Density_plot.png" alt="Ferry ramps at Lake Constance, generated with ChatGPT"></p>
 
-<h2 id="sec-introduction">Introduction</h2>
 
-<p>
-Water levels in large lakes are subject to complex dynamics driven by meteorological
-conditions, hydrology, and long-term climate trends. For Lake Constance, these fluctuations
-have direct operational consequences. During periods of high water levels, steeper ferry
-ramps complicate boarding and can restrict low-profile vehicles. Conversely, low water levels
-reduce cargo capacity and make loading strategies more difficult, increasing delays and fuel
-consumption.
-</p>
 
-<p>
-In this project, we develop models to predict <strong>next-day water levels</strong> at Lake Constance
-using hydrological, meteorological, lunar, and climate-related data. Accurate forecasts help
-ferry operators anticipate issues and adjust schedules and loading strategies proactively.
-</p>
 
-<h2 id="sec-methodology">Methodology</h2>
-
-<h3>Data sources</h3>
-
+<div id="fig-header" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-header-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ramp_image_Chat_GPT.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-header-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: With ChatGPT generatet header image
+</figcaption>
+</figure>
+</div>
+<section id="sec-introduction" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="sec-introduction"><span class="header-section-number">1</span> Introduction</h2>
+<p>Water levels in large lakes are subject to complex dynamics driven by meteorological conditions, hydrology, and long-term climate trends. For Lake Constance, these fluctuations have direct operational consequences. During periods of high water levels, steeper entry and exit angles at ferry ramps complicate boarding and disembarking, particularly for low-profile vehicles that may even be restricted to avoid damage. Conversely, low water levels can reduce cargo capacity, require stricter loading rules, and increase delays and fuel consumption due to suboptimal routing and load distribution.</p>
+<p>These operational frictions lead to customer dissatisfaction, lost revenue, and higher overall costs for ferry companies operating on Lake Constance. Reliable short-term water level forecasts are therefore highly valuable, as they enable better planning of schedules, loading strategies, and potential service suspensions. :contentReference<span data-index="0">oaicite:0</span></p>
+<p>In this project, we develop models to predict next-day water levels at Lake Constance using a comprehensive set of meteorological, hydrological, and climate-related features. Formally, let</p>
 <ul>
-  <li><strong>Hydrological data:</strong> daily lake levels (Constance gauge) and weekly groundwater levels.</li>
-  <li><strong>Meteorological data:</strong> humidity, temperature, precipitation, snow depth, pressure, sunshine, global radiation, wind speed.</li>
-  <li><strong>Lunar data:</strong> daily moon illumination from NASA Horizons.</li>
-  <li><strong>Climate data:</strong> annual mean surface temperature change.</li>
+<li><span class="math inline">\(y_t\)</span> denote the observed lake level on day <span class="math inline">\(t\)</span>, and<br>
+</li>
+<li><span class="math inline">\({x}_t\)</span> the feature vector observed on day <span class="math inline">\(t\)</span>.</li>
 </ul>
-
-<p>
-All datasets are cleaned, converted to a common daily frequency, and merged by date. The final
-modelling period spans several decades, providing a long history with clear seasonal and
-interannual patterns.
-</p>
-
-<h3>Preprocessing</h3>
-
+<p>The one-step-ahead forecasting problem is to construct a model <span class="math inline">\(f(\cdot)\)</span> such that</p>
+<p><span class="math display">\[
+\hat{y}_{t+1} = f(x_t), \qquad t = 1,\dots,T-1,
+\]</span></p>
+<p>and to evaluate its out-of-sample performance on a hold-out period.</p>
+<p>We compare several classes of models:</p>
 <ul>
-  <li>Missing values in weather variables are imputed using <em>seasonal monthly means</em>.</li>
-  <li>Groundwater and climate indicators are forward-filled to match the daily resolution.</li>
-  <li>Outliers are corrected using a 30-day rolling mean based only on past data.</li>
-  <li>The target is shifted so that features at day <em>t</em> predict the water level at day <em>t+1</em>.</li>
-  <li>Because levels are right-skewed, we model the log-transformed level.</li>
-  <li>We add seven days of lagged water levels and calendar features (e.g. month, week of year)
-      encoded with sine/cosine transforms to capture seasonality.</li>
+<li>a classical ARMA time-series model,<br>
+</li>
+<li>regularized linear regression (Ridge and Lasso),<br>
+</li>
+<li>a non-linear Random Forest, and<br>
+</li>
+<li>a feed-forward Neural Network.</li>
 </ul>
-
-<p>
-For statistical models such as ARMA and linear regression, we work with deseasonalised
-versions of the series to ensure approximate stationarity. Stationarity is checked using
-standard tests (ADF and KPSS).
-</p>
-
-<h2 id="sec-models">Models</h2>
-
-<h3>ARMA</h3>
-
-<p>
-We fit an ARMA(p,q) model to the deseasonalised log water level and select the order via
-time-series cross-validation. The best configuration is an ARMA(4,3). Forecasts are produced
-in a rolling manner, always conditioning on the most recent data. This model already improves
-substantially on a naive “tomorrow equals today” benchmark.
-</p>
-
-<h3>Regularised linear regression (Ridge &amp; Lasso)</h3>
-
-<p>
-To exploit the full feature set, we fit linear models of the form
-\(z_{t+1} = \beta_0 + \mathbf{x}_t^\top \boldsymbol{\beta} + \varepsilon_{t+1}\),
-where \(z_{t+1}\) is the deseasonalised log level and \(\mathbf{x}_t\) contains lagged levels and
-weather features. We use
-<strong>Ridge regression</strong> (L2 penalty) and <strong>Lasso regression</strong> (L1 penalty), tuning the
-regularisation parameter by time-series cross-validation.
-</p>
-
-<p>
-Ridge regression achieves the best overall performance with an out-of-sample RMSE of about
-<strong>1.40&nbsp;cm</strong>, followed closely by Lasso (1.43&nbsp;cm).
-</p>
-
-<h3>Random Forest</h3>
-
-<p>
-Random Forest is an ensemble of decision trees fitted on bootstrap samples of the training
-data. Hyperparameters such as the number of trees and maximum depth are tuned via
-cross-validation. The model reaches an RMSE of roughly <strong>2.04&nbsp;cm</strong>, clearly beating the naive
-baseline but not the best linear models.
-</p>
-
-<p>
-Feature importance reveals that the <strong>previous day’s water level</strong> dominates the prediction.
-When we exclude this feature to inspect secondary drivers, precipitation and additional lags
-become the most important variables, while many other weather indicators add relatively little
-information for one-day-ahead forecasts.
-</p>
-
-<h3>Neural Network</h3>
-
-<p>
-We also train a fully connected neural network (MLP) with three hidden layers
-(32&nbsp;–&nbsp;64&nbsp;–&nbsp;32 units), ReLU activations, Adam optimiser, and L2 regularisation. The network
-can capture non-linear relationships and interactions between features. It achieves an RMSE of
-about <strong>1.96&nbsp;cm</strong>, close to but slightly worse than Ridge regression.
-Permutation importance again confirms the central role of lagged water levels, with
-precipitation as the main supporting input.
-</p>
-
-<h2 id="sec-results">Results</h2>
-
-<p>The table below summarises the out-of-sample RMSE of all models.</p>
-
-<table class="table">
+<p>Performance is assessed via the root mean squared error (RMSE),</p>
+<p><span class="math display">\[
+\text{RMSE} =
+\sqrt{\frac{1}{N}\sum_{t=1}^{N}(y_t - \hat{y}_t)^2},
+\]</span></p>
+<p>and benchmarked against a naive persistence model (_{t+1}^{} = y_t). We find that modern machine learning methods and regularized linear models substantially improve upon the naive baseline, with Ridge regression achieving the lowest RMSE in our experiments.</p>
+<hr>
+</section>
+<section id="sec-methodology" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="sec-methodology"><span class="header-section-number">2</span> Methodology</h2>
+<section id="sec-setup" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="sec-setup"><span class="header-section-number">2.1</span> Problem Setup</h3>
+<p>We focus on daily water levels measured in Constance, one of the standard gauging stations at Lake Constance. Let ({y_t}<em>{t=1}^T) denote the water level time series (in cm). The goal is to forecast (y</em>{t+1}) using information available up to day (t).</p>
+<p>The general prediction framework can be written as</p>
+<p><span class="math display">\[
+y_{t+1} = f(x_t) + \varepsilon_{t+1},
+\]</span></p>
+<p>where <span class="math inline">\(x_t\)</span> contains contemporaneous and lagged features and (_{t+1}) is an error term with mean zero.</p>
+</section>
+<section id="sec-data" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="sec-data"><span class="header-section-number">2.2</span> Data</h3>
+<p>We combine several datasets to construct <span class="math inline">\({x}_t\)</span>:</p>
+<ol type="1">
+<li><p><strong>Hydrological data</strong></p>
+<ul>
+<li>Daily water levels of Lake Constance (station Constance) from 1924 to 2023.<br>
+</li>
+<li>Weekly groundwater levels from a nearby station.</li>
+</ul></li>
+<li><p><strong>Meteorological data</strong> (daily)</p>
+<ul>
+<li>humidity, mean temperature, precipitation,<br>
+</li>
+<li>snow depth, sea-level pressure,<br>
+</li>
+<li>sunshine duration, global radiation, wind speed.</li>
+</ul></li>
+<li><p><strong>Lunar data</strong></p>
+<ul>
+<li>Daily moon illumination from NASA’s Horizons system, representing the fraction of the moon’s disk that is illuminated.</li>
+</ul></li>
+<li><p><strong>Climate change data</strong></p>
+<ul>
+<li>Annual mean surface temperature change for Switzerland, used as a proxy for long-term climate trends.</li>
+</ul></li>
+</ol>
+<p>All datasets are converted to CSV format, cleaned, and merged by date to form a single panel. The final modeling period spans 1973–2023, providing a long history with clear seasonal and interannual patterns.</p>
+</section>
+<section id="sec-preprocessing" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="sec-preprocessing"><span class="header-section-number">2.3</span> Preprocessing</h3>
+<p>Several preprocessing steps are required before modeling:</p>
+<section id="temporal-alignment-and-target-shift" class="level4" data-number="2.3.1">
+<h4 data-number="2.3.1" class="anchored" data-anchor-id="temporal-alignment-and-target-shift"><span class="header-section-number">2.3.1</span> Temporal alignment and target shift</h4>
+<p>Because we want to predict tomorrow’s water level using today’s information, the target series is shifted:</p>
+<p><span class="math display">\[
+\tilde{y}_t = y_{t+1}, \qquad t = 1,\dots,T-1,
+\]</span></p>
+<p>so that each row <span class="math inline">\((x_t, \tilde{y}_t)\)</span> encodes features at day <span class="math inline">\(t\)</span> and the corresponding water level on day (t+1).</p>
+</section>
+<section id="handling-missing-values-and-outliers" class="level4" data-number="2.3.2">
+<h4 data-number="2.3.2" class="anchored" data-anchor-id="handling-missing-values-and-outliers"><span class="header-section-number">2.3.2</span> Handling missing values and outliers</h4>
+<ul>
+<li>Groundwater (weekly) and climate change (annual) data are forward-filled to match the daily resolution.<br>
+</li>
+<li>Missing values in weather variables (e.g., snow depth, sunshine, wind speed, radiation) are imputed using **seasonal monthly means, preserving seasonal patterns.<br>
+</li>
+<li>Outliers are identified via time-series plots and corrected using a 30-day rolling mean where appropriate, relying only on historical/current information to avoid data leakage.</li>
+</ul>
+</section>
+<section id="traintest-split" class="level4" data-number="2.3.3">
+<h4 data-number="2.3.3" class="anchored" data-anchor-id="traintest-split"><span class="header-section-number">2.3.3</span> Train–test split</h4>
+<p>To ensure a realistic evaluation, we use a temporal split:</p>
+<ul>
+<li>Training set: data up to 2017 (inclusive).<br>
+</li>
+<li>Test set: 2018–2023.</li>
+</ul>
+<p>This respects the time order and avoids training on future information.</p>
+</section>
+<section id="log-transformation-and-feature-engineering" class="level4" data-number="2.3.4">
+<h4 data-number="2.3.4" class="anchored" data-anchor-id="log-transformation-and-feature-engineering"><span class="header-section-number">2.3.4</span> Log transformation and feature engineering</h4>
+<p>Exploratory analysis shows that water levels are right-skewed and approximately log-normally distributed. A log transformation stabilizes variance:</p>
+<p><span class="math display">\[
+z_t = \log(y_t).
+\]</span></p>
+<p>To capture temporal dependence, we add lagged levels as features:</p>
+<p><span class="math display">\[
+z_{t-1}, z_{t-2}, \dots, z_{t-7},
+\]</span></p>
+<p>representing the last seven days of water levels. Because these lags would be known at prediction time, they do not introduce look-ahead bias.</p>
+<p>For models that can exploit seasonality directly (Random Forest, Neural Network), we additionally encode calendar effects via cyclical features, e.g.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{month\_sin}_t &amp;= \sin\left( 2\pi \cdot \frac{\text{month}(t)}{12} \right), \\
+\text{month\_cos}_t &amp;= \cos\left( 2\pi \cdot \frac{\text{month}(t)}{12} \right),
+\end{aligned}
+\]</span></p>
+<p>and analogous terms for week-of-year, half-year, etc.</p>
+<p>For linear models and ARMA, we work on deseasonalized versions of the series to meet stationarity and linearity assumptions (see below).</p>
+</section>
+</section>
+<section id="sec-decomposition" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="sec-decomposition"><span class="header-section-number">2.4</span> Time-Series Decomposition</h3>
+<p>Fourier analysis and seasonal plots reveal strong annual and semi-annual components in the water level series, but no pronounced long-term trend. For models that require approximate stationarity (ARMA) or that may be dominated by spurious seasonal correlations (linear regression), we:</p>
+<ol type="1">
+<li>Remove seasonal components from the target and from features that share similar seasonality.<br>
+</li>
+<li>Detrend only those features exhibiting strong trends unrelated to the target (notably the climate change indicator).</li>
+</ol>
+<p>Stationarity is confirmed using Augmented Dickey–Fuller (ADF) and KPSS tests on the deseasonalized target.</p>
+<hr>
+</section>
+</section>
+<section id="sec-models" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="sec-models"><span class="header-section-number">3</span> Models</h2>
+<p>We compare four main model classes.</p>
+<section id="sec-arma" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="sec-arma"><span class="header-section-number">3.1</span> ARMA</h3>
+<p>The ARMA model treats deseasonalized log water levels as a univariate time series <span class="math inline">\(\tilde{z}_t\)</span> and assumes</p>
+<p><span class="math display">\[
+\tilde{z}_t = \mu + \sum_{i=1}^{p} \phi_i \tilde{z}_{t-i}
++ \sum_{j=1}^{q} \theta_j \varepsilon_{t-j}
++ \varepsilon_t,
+\qquad \varepsilon_t \sim \mathcal{N}(0,\sigma^2).
+\]</span></p>
+<p>We perform a grid search over orders <span class="math inline">\(p\)</span> and <span class="math inline">\(q\)</span> on the training set using time-series cross-validation, selecting the combination that minimizes RMSE. The optimal configuration is ARMA(4,3). Forecasts are generated in a rolling fashion, always using the most recent observed (or previously predicted) values.</p>
+</section>
+<section id="sec-linear" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="sec-linear"><span class="header-section-number">3.2</span> Regularized Linear Regression (Ridge and Lasso)</h3>
+<p>After deseasonalization and standardization, we model the relationship between features (_t) and target <span class="math inline">\(\tilde{z}_t\)</span> via</p>
+<p><span class="math display">\[
+\tilde{z}_t = \beta_0 + x_t^\top \boldsymbol{\beta} + \varepsilon_t,
+\]</span></p>
+<p>with two different regularization schemes:</p>
+<ul>
+<li><strong>Ridge regression</strong> solves<br>
+<span class="math display">\[
+\min_{\beta_0,\boldsymbol{\beta}}
+\sum_{t} (\tilde{z}_t - \beta_0 - \mathbf{x}_t^\top \boldsymbol{\beta})^2
++ \lambda \lVert \boldsymbol{\beta} \rVert_2^2,
+\]</span></li>
+<li><strong>Lasso regression</strong> solves<br>
+<span class="math display">\[
+\min_{\beta_0,\boldsymbol{\beta}}
+\sum_{t} (\tilde{z}_t - \beta_0 - \mathbf{x}_t^\top \boldsymbol{\beta})^2
++ \lambda \lVert \boldsymbol{\beta} \rVert_1.
+\]</span></li>
+</ul>
+<p>The regularization parameter <span class="math inline">\(\lambda\)</span> is selected via grid search with TimeSeriesSplit cross-validation. Ridge primarily shrinks coefficients, while Lasso additionally performs variable selection by driving some coefficients to zero.</p>
+</section>
+<section id="sec-rf" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="sec-rf"><span class="header-section-number">3.3</span> Random Forest</h3>
+<p>Random Forest is an ensemble of decision trees. Each tree (f^{(b)}) is fitted on a bootstrap sample of the training data, considering a random subset of features at each split. The final prediction is the average</p>
+<p><span class="math display">\[
+\hat{z}_{t+1}^{\text{RF}} = \frac{1}{B} \sum_{b=1}^{B} f^{(b)}({x}_t).
+\]</span></p>
+<p>Hyperparameters such as the number of trees, maximum depth, and minimum samples per split are tuned via RandomizedSearchCV with time-series splits. After tuning, we train a larger forest (e.g.&nbsp;(B = 500) trees) using the best configuration. Random Forest additionally provides feature importance scores, which we exploit to interpret the drivers of predictability.</p>
+</section>
+<section id="sec-nn" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="sec-nn"><span class="header-section-number">3.4</span> Neural Network</h3>
+<p>For the neural network, we use a multi-layer perceptron (MLP) implemented via scikit-learn’s <code>MLPRegressor</code>. The MLP models a non-linear mapping</p>
+<p><span class="math display">\[
+\hat{z}_{t+1}^{\text{NN}} = f_{\text{NN}}(\mathbf{x}_t; \Theta),
+\]</span></p>
+<p>where <span class="math inline">\(\Theta\)</span> denotes all weights and biases. The chosen architecture has three hidden layers with 32, 64, and 32 neurons, respectively, ReLU activations, and the Adam optimizer with learning rate <span class="math inline">\(10^{-4}\)</span>. An <span class="math inline">\(L_2\)</span> penalty with <span class="math inline">\(\alpha = 0.01\)</span> controls overfitting.</p>
+<p>Hyperparameters (layer sizes, batch size, learning rate, regularization) are tuned via <code>RandomizedSearchCV</code>. We assess feature importance using permutation importance, which measures the increase in prediction error when a feature is randomly shuffled.</p>
+<hr>
+</section>
+</section>
+<section id="sec-results" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="sec-results"><span class="header-section-number">4</span> Results</h2>
+<section id="sec-accuracy" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="sec-accuracy"><span class="header-section-number">4.1</span> Forecast Accuracy</h3>
+<p>Table 1 reports RMSE values for all models on the test set (2018–2023), along with the naive “yesterday = today” benchmark.</p>
+<p><strong>Table 1: Out-of-sample RMSE for next-day water level forecasts (cm).</strong></p>
+<table class="caption-top table">
 <thead>
-<tr><th>Model</th><th>RMSE (cm)</th></tr>
+<tr class="header">
+<th>Model</th>
+<th>RMSE</th>
+</tr>
 </thead>
 <tbody>
-<tr><td>Naive (y<sub>t+1</sub> = y<sub>t</sub>)</td><td>2.85</td></tr>
-<tr><td>ARMA(4,3)</td><td>2.12</td></tr>
-<tr><td>Ridge Regression</td><td><strong>1.40</strong></td></tr>
-<tr><td>Lasso Regression</td><td>1.43</td></tr>
-<tr><td>Random Forest</td><td>2.04</td></tr>
-<tr><td>Neural Network</td><td>1.96</td></tr>
+<tr class="odd">
+<td>Naive (<span class="math inline">\(y_t\)</span>)</td>
+<td>2.85</td>
+</tr>
+<tr class="even">
+<td>ARMA(4,3)</td>
+<td>2.12</td>
+</tr>
+<tr class="odd">
+<td>Ridge Regression</td>
+<td>1.40</td>
+</tr>
+<tr class="even">
+<td>Lasso Regression</td>
+<td>1.43</td>
+</tr>
+<tr class="odd">
+<td>Random Forest</td>
+<td>2.04</td>
+</tr>
+<tr class="even">
+<td>Neural Network</td>
+<td>1.96</td>
+</tr>
 </tbody>
 </table>
+<p>Ridge regression achieves the lowest RMSE (1.40 cm), followed closely by Lasso and the neural network. Both Random Forest and ARMA substantially improve over the naive baseline, but remain less accurate than the best linear and neural models.</p>
+</section>
+<section id="sec-interpretation" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="sec-interpretation"><span class="header-section-number">4.2</span> Interpretation of Drivers</h3>
+<p>Across Random Forest and Neural Network models, lagged water levels, in particular the first lag (z_{t-1}), dominate feature importance. In the Random Forest, lag 1 alone accounts for more than 99% of the total importance, confirming that water levels are highly persistent. When lag 1 is excluded to inspect secondary drivers, precipitation and additional lagged levels emerge as the most influential features, while snow depth contributes little additional information.</p>
+<p>Permutation importance for the neural network confirms the same pattern:</p>
+<ul>
+<li>lagged levels are crucial,<br>
+</li>
+<li>precipitation plays a supporting role,<br>
+</li>
+<li>other weather variables, lunar features, and long-term climate indicators appear less relevant for one-day-ahead forecasts.</li>
+</ul>
+</section>
+<section id="sec-baseline" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="sec-baseline"><span class="header-section-number">4.3</span> Comparison to Baseline</h3>
+<p>Relative to the naive model (RMSE 2.85 cm), the best model (Ridge, 1.40 cm) reduces the typical forecast error by roughly 50%. Even the ARMA model improves RMSE by about 25%. In operational terms, this tighter error band enables ferry operators to:</p>
+<ul>
+<li>better anticipate when ramps may become too steep or too shallow,<br>
+</li>
+<li>adjust loading strategies in advance, and<br>
+</li>
+<li>communicate potential disruptions earlier to customers.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="sec-conclusion" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="sec-conclusion"><span class="header-section-number">5</span> Conclusion</h2>
+<p>This study investigates next-day water level forecasts for Lake Constance using a rich feature set combining hydrological, meteorological, lunar, and climate change data. After careful preprocessing, feature engineering, and model tuning, we compare ARMA, regularized linear regressions, Random Forests, and a neural network.</p>
+<p>Our main findings are:</p>
+<ol type="1">
+<li>Lagged water levels are by far the most important predictors of tomorrow’s level; one-day persistence dominates the dynamics.<br>
+</li>
+<li>Precipitation and additional lags provide useful supplementary information, while other variables play a comparatively minor role for one-day-ahead predictions.<br>
+</li>
+<li>Ridge regression achieves the best overall performance, slightly outperforming Lasso and the neural network, and clearly improving upon ARMA and Random Forest.<br>
+</li>
+<li>All advanced models significantly outperform a naive persistence benchmark, reducing RMSE by up to 50%.</li>
+</ol>
+<p>From a practical perspective, these results demonstrate that relatively simple, interpretable models such as Ridge regression can already deliver highly accurate forecasts that are suitable for operational decision-making. Future work could extend the horizon to multi-day forecasts, incorporate probabilistic prediction intervals, or explore spatially distributed models that jointly consider multiple gauging stations around Lake Constance.</p>
 
-<p>
-Ridge regression clearly outperforms the naive benchmark and the other models, reducing
-typical forecast errors by around 50% compared to simply using yesterday’s water level.
-Even the simpler ARMA model provides a meaningful improvement.
-</p>
 
-<h2 id="sec-conclusion">Conclusion</h2>
-
-<p>
-Our study shows that short-term water level forecasting for Lake Constance can be done
-accurately using relatively simple, interpretable models. Lagged water levels are by far the
-most informative predictors, with precipitation and additional lags playing a secondary role.
-Among the methods we compared, Ridge regression offers the best balance between accuracy and
-simplicity.
-</p>
-
-<p>
-From a practical perspective, these forecasts can support ferry operators in planning
-operations, anticipating restrictions at very high or very low water levels, and communicating
-potential disruptions earlier to customers. Future work could extend the models to multi-day
-horizons and incorporate probabilistic prediction intervals to better quantify forecast
-uncertainty.
-</p>
+</section>
 
 </main> <!-- /main -->
-
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -869,7 +1077,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-</div> 
+</div> <!-- /content -->
 
 
 
