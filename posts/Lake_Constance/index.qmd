@@ -1,7 +1,7 @@
 ---
-title: "Welcome to my Blog"
+title: "Water Level Forecast of Lake Constance"
 author: "Sina Schlegel"
-date: "2025-02-30"
+date: "2025-02-25"
 categories:
   - Time Series Analysis
   - Machine Learning
@@ -18,6 +18,10 @@ format:
     fig-dpi: 150
     fig-format: png
 ---
+
+![With ChatGPT generatet header image](images/ramp_image_Chat_GPT.png){#fig-header}
+
+
 
 ## Introduction {#sec-introduction}
 
