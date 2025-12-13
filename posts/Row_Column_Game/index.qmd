@@ -21,11 +21,12 @@ format:
 
 ## Introduction {#sec-introduction}
 
+<img src="Images/Game_zoom.png" style="float: right; width: 30%; margin-left: 15px;">
+
 In this post, I explore the design of intelligent decision-making strategies for the
 Row–Column Game, a turn-based two-player game defined by a surprisingly strategic rule:
 
-> After the first move, each player must select a cell in the same row or column as  
-> the opponent’s previous move.
+After the first move, each player must select a cell in the same row or column as the opponent’s previous move.
 
 The game is played on an $n \times n$ grid of positive integers.
 Each chosen cell adds to the player’s score and is removed from the board.  
@@ -43,8 +44,69 @@ Before considering individual strategies, it is important to understand the
 fundamental asymmetries built into the Row–Column Game. Although the rules are
 simple and both players face the same restrictions, the first move shapes the
 entire structure of the remaining game, and often creates a natural advantage
-for Player 1.
+for Player 1. This advantage depends on the size of the board.
 
-### The power of choosing the first row or column {#sec-firstmover}
+To see why, imagine two types of boards:
+
+1. Odd number of cells (`n % 2 > 0`), e.g. 3×3, 5×5  
+2. Even number of cells (`n % 2 = 0`), e.g. 4×4, 6×6  
+
+These two cases behave very differently.
+
+### Odd board sizes: Player 1 gets “one extra life” {#sec-odd}
+
+In a 3×3 game there are 9 total moves.  
+No matter what happens, Player 1 gets 5 moves and Player 2 gets only 4.
+
+This alone is already a mathematical advantage, even if all cell values were equal,  
+but in real boards values vary, so Player 1 also gets one more chance to grab something valuable.
+
+In other words:  
+on odd-sized boards, Player 2 starts the game slightly doomed unless they play with a real plan.
+
+This also means Player 2 must actively try to:
+
+- force an early endgame,  
+- collapse the state into an isolated row/column,  
+- or otherwise “trap” the game into a situation where Player 1’s extra move becomes worthless.
+
+Player 1, on the other hand, must avoid being funneled into a prematurely dead state where that 5th move never materializes.
+
+### Even board sizes: Player 1 wants to end the game early {#sec-even}
+
+The dynamic flips for even-sized boards.
+
+In a 4×4 game there are 16 moves, an even number, meaning:
+
+- If both players keep the game alive, Player 2 gets the last move.
+- But if Player 1 can pinch the state into an isolated sub-board,  
+  forcing a premature “game over,”  
+  then Player 1 steals the final move instead.
+
+So the incentive structure becomes:
+
+- Player 1: look for opportunities to end the game early  
+- Player 2: avoid collapse, keep the game alive, stretch the move count back to even
+
+This interplay of “who wants the game to continue” is a huge part of strategy design.
+
+### Why detecting isolated sequences matters {#sec-isolation}
+
+An isolated sequence (or forced end block) is any row–column region where only one or two legal moves remain, and  
+neither player can escape to the rest of the board.
+
+If your algorithm cannot detect these situations, then:
+
+- Player 2 will never overcome the parity disadvantage on odd boards, and  
+- Player 1 will miss opportunities to secure an extra move on even boards**
+
+In other words, without detecting isolation states, no strategy can meaningfully overcome or exploit the fundamental mathematical structure of the game.
+
+Any competitive AI must therefore recognize when the game is about to collapse  
+and adjust decisions accordingly.
+
+This parity insight guided the design of our strategies and also explains many  
+patterns seen later in the simulation results.
+
 
 

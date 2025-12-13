@@ -190,7 +190,9 @@ window.Quarto = {
   <li><a href="#sec-introduction" id="toc-sec-introduction" class="nav-link active" data-scroll-target="#sec-introduction"><span class="header-section-number">1</span> Introduction</a></li>
   <li><a href="#sec-advantage" id="toc-sec-advantage" class="nav-link" data-scroll-target="#sec-advantage"><span class="header-section-number">2</span> Understanding Initiative and Positional Advantage</a>
   <ul>
-  <li><a href="#sec-firstmover" id="toc-sec-firstmover" class="nav-link" data-scroll-target="#sec-firstmover"><span class="header-section-number">2.1</span> The power of choosing the first row or column</a></li>
+  <li><a href="#sec-odd" id="toc-sec-odd" class="nav-link" data-scroll-target="#sec-odd"><span class="header-section-number">2.1</span> Odd board sizes: Player 1 gets “one extra life”</a></li>
+  <li><a href="#sec-even" id="toc-sec-even" class="nav-link" data-scroll-target="#sec-even"><span class="header-section-number">2.2</span> Even board sizes: Player 1 wants to end the game early</a></li>
+  <li><a href="#sec-isolation" id="toc-sec-isolation" class="nav-link" data-scroll-target="#sec-isolation"><span class="header-section-number">2.3</span> Why detecting isolated sequences matters</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -204,11 +206,9 @@ window.Quarto = {
 
 <section id="sec-introduction" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="sec-introduction"><span class="header-section-number">1</span> Introduction</h2>
+<p><img src="Images/Game_zoom.png" style="float: right; width: 30%; margin-left: 15px;"></p>
 <p>In this post, I explore the design of intelligent decision-making strategies for the Row–Column Game, a turn-based two-player game defined by a surprisingly strategic rule:</p>
-<blockquote class="blockquote">
-<p>After the first move, each player must select a cell in the same row or column as<br>
-the opponent’s previous move.</p>
-</blockquote>
+<p>After the first move, each player must select a cell in the same row or column as the opponent’s previous move.</p>
 <p>The game is played on an <span class="math inline">\(n \times n\)</span> grid of positive integers. Each chosen cell adds to the player’s score and is removed from the board.<br>
 The game continues until no legal moves remain.</p>
 <p>Although the rules are simple, the game produces a rich space of decisions: sometimes aggressively taking a high-value cell is optimal, but often it hands your opponent a devastating reply.<br>
@@ -217,9 +217,65 @@ This makes the game a perfect playground for experimenting with different kinds 
 </section>
 <section id="sec-advantage" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="sec-advantage"><span class="header-section-number">2</span> Understanding Initiative and Positional Advantage</h2>
-<p>Before considering individual strategies, it is important to understand the fundamental asymmetries built into the Row–Column Game. Although the rules are simple and both players face the same restrictions, the first move shapes the entire structure of the remaining game, and often creates a natural advantage for Player 1.</p>
-<section id="sec-firstmover" class="level3" data-number="2.1">
-<h3 data-number="2.1" class="anchored" data-anchor-id="sec-firstmover"><span class="header-section-number">2.1</span> The power of choosing the first row or column</h3>
+<p>Before considering individual strategies, it is important to understand the fundamental asymmetries built into the Row–Column Game. Although the rules are simple and both players face the same restrictions, the first move shapes the entire structure of the remaining game, and often creates a natural advantage for Player 1. This advantage depends on the size of the board.</p>
+<p>To see why, imagine two types of boards:</p>
+<ol type="1">
+<li>Odd number of cells (<code>n % 2 &gt; 0</code>), e.g.&nbsp;3×3, 5×5<br>
+</li>
+<li>Even number of cells (<code>n % 2 = 0</code>), e.g.&nbsp;4×4, 6×6</li>
+</ol>
+<p>These two cases behave very differently.</p>
+<section id="sec-odd" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="sec-odd"><span class="header-section-number">2.1</span> Odd board sizes: Player 1 gets “one extra life”</h3>
+<p>In a 3×3 game there are 9 total moves.<br>
+No matter what happens, Player 1 gets 5 moves and Player 2 gets only 4.</p>
+<p>This alone is already a mathematical advantage, even if all cell values were equal,<br>
+but in real boards values vary, so Player 1 also gets one more chance to grab something valuable.</p>
+<p>In other words:<br>
+on odd-sized boards, Player 2 starts the game slightly doomed unless they play with a real plan.</p>
+<p>This also means Player 2 must actively try to:</p>
+<ul>
+<li>force an early endgame,<br>
+</li>
+<li>collapse the state into an isolated row/column,<br>
+</li>
+<li>or otherwise “trap” the game into a situation where Player 1’s extra move becomes worthless.</li>
+</ul>
+<p>Player 1, on the other hand, must avoid being funneled into a prematurely dead state where that 5th move never materializes.</p>
+</section>
+<section id="sec-even" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="sec-even"><span class="header-section-number">2.2</span> Even board sizes: Player 1 wants to end the game early</h3>
+<p>The dynamic flips for even-sized boards.</p>
+<p>In a 4×4 game there are 16 moves, an even number, meaning:</p>
+<ul>
+<li>If both players keep the game alive, Player 2 gets the last move.</li>
+<li>But if Player 1 can pinch the state into an isolated sub-board,<br>
+forcing a premature “game over,”<br>
+then Player 1 steals the final move instead.</li>
+</ul>
+<p>So the incentive structure becomes:</p>
+<ul>
+<li>Player 1: look for opportunities to end the game early<br>
+</li>
+<li>Player 2: avoid collapse, keep the game alive, stretch the move count back to even</li>
+</ul>
+<p>This interplay of “who wants the game to continue” is a huge part of strategy design.</p>
+</section>
+<section id="sec-isolation" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="sec-isolation"><span class="header-section-number">2.3</span> Why detecting isolated sequences matters</h3>
+<p>An isolated sequence (or forced end block) is any row–column region where only one or two legal moves remain, and<br>
+neither player can escape to the rest of the board.</p>
+<p>If your algorithm cannot detect these situations, then:</p>
+<ul>
+<li>Player 2 will never overcome the parity disadvantage on odd boards, and<br>
+</li>
+<li>Player 1 will miss opportunities to secure an extra move on even boards**</li>
+</ul>
+<p>In other words, without detecting isolation states, no strategy can meaningfully overcome or exploit the fundamental mathematical structure of the game.</p>
+<p>Any competitive AI must therefore recognize when the game is about to collapse<br>
+and adjust decisions accordingly.</p>
+<p>This parity insight guided the design of our strategies and also explains many<br>
+patterns seen later in the simulation results.</p>
 
 
 </section>
